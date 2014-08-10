@@ -12,7 +12,7 @@ from urllib2 import HTTPError
 RONGCLOUD_CONF = {
     "app_key": "your_appkey",
     "app_secret": "your_appsecret",
-    "api_host": "http://auth.cn.rong.io"
+    "api_host": "https://api.cn.rong.io"
 }
 
 
@@ -38,7 +38,7 @@ class BaseService(object):
         url = urllib.basejoin(RONGCLOUD_CONF['api_host'], url)
 
         headers.update({
-            "Content-Type": "Application/x-www-form-urlencoded",
+            "Content-Type": "application/x-www-form-urlencoded",
             'appKey': RONGCLOUD_CONF['app_key'],
             'appSecret': RONGCLOUD_CONF['app_secret'],
         })
@@ -61,23 +61,22 @@ class BaseService(object):
 
 
 class Auth(BaseService):
-    service_url = '/reg.%(format)s'
+    service_url = '/user/getToken.%(format)s'
     method = 'POST'
   
-    def request(self, user_id, name='', portrait_uri='', device_id='', format=FORMAT.JSON):
+    def request(self, user_id, name='', portrait_uri='', format=FORMAT.JSON):
         """
         userId	    String	用户 Id，最大长度 32 字节，是用户在 App 中的唯一标识码，必须保证在同一个 App                              内不重复，重复的用户 Id 将被当作是同一用户。
         name	      String	用户名称，最大长度 128 字节。
         portraitUri	String	用户头像 URI，最大长度 1024 字节。
-        deviceId	  String	设备 Id，设备的唯一标识，用来在推送中识别设备。
         """
 
         params = {
             'userId': user_id,
             'name': name,
-            'portraitUri': portrait_uri,
-            'deviceId': device_id
+            'portraitUri': portrait_uri
         }
+        
         url = self.service_url % {'format': format}
         return self.get_response(url, params, method=self.method)
 
